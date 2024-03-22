@@ -8,9 +8,9 @@ spring:
       max-request-size: 10MB
   #  DB Configuration.
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/student_portal
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/studentportal
     username: root
-    password: mysqlpassword
+    password: Deep143@
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   #  Hibernate Config.

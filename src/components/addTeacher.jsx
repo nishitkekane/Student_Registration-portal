@@ -1,41 +1,34 @@
-import { useState } from "react";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useState } from 'react'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 // const fs = require("fs");
 // const FormData = require("form-data");
 // Define Yup schema for form validation
 const formSchema = yup.object().shape({
-  firstname: yup.string().required("First name is required."),
-  lastname: yup.string().required("Last name is required."),
+  firstname: yup.string().required('First name is required.'),
+  lastname: yup.string().required('Last name is required.'),
   email: yup
     .string()
-    .email("Please enter a valid email address.")
-    .required("Email is required."),
-  department: yup.string().required("Department is required."),
-  address: yup.string().required("Address is required."),
-  gender: yup.string().required("Gender is required."),
+    .email('Please enter a valid email address.')
+    .required('Email is required.'),
+  department: yup.string().required('Department is required.'),
+  address: yup.string().required('Address is required.'),
+  gender: yup.string().required('Gender is required.'),
   aadharNo: yup
     .string()
-    .required("Aadhar number is required.")
-    .matches(/^\d{12}$/, "Aadhar number must be 12 digits."),
-  file1: yup
-    .mixed()
-    .test(
-      "fileType",
-      "Only PDF files are allowed",
-      (value) => value && value[0].type === "application/pdf"
-    ),
-});
+    .required('Aadhar number is required.')
+    .matches(/^\d{12}$/, 'Aadhar number must be 12 digits.'),
+})
 
 function addTeacher() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-  // let formData = new FormData();
+
   const {
     register,
     handleSubmit,
@@ -43,16 +36,15 @@ function addTeacher() {
   } = useForm({
     resolver: yupResolver(formSchema),
     defaultValues: {
-      firstname: "",
-      lastname: "",
-      email: "",
-      department: "",
-      gender: "",
-      aadharNo: "",
-      address: "",
-      file1: null,
+      firstname: '',
+      lastname: '',
+      email: '',
+      department: '',
+      gender: '',
+      aadharNo: '',
+      address: '',
     },
-  });
+  })
 
   // const onFileChange = (e) => {
   //   if (e.target && e.target.files[0]) {
@@ -61,6 +53,7 @@ function addTeacher() {
   // };
   // Define form submit handler
   async function onSubmit(data) {
+    console.log(selectedFile)
     const send = {
       firstname: data.firstname,
       lastname: data.lastname,
@@ -69,25 +62,28 @@ function addTeacher() {
       gender: data.gender,
       aadhaarNo: data.aadharNo,
       address: data.address,
-      year: "FY",
-    };
+      year: 'FY',
+    }
+
+    const formData = new FormData()
+    formData.append('aadhar', selectedFile)
 
     try {
       const headers = {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       };
-      console.log(data);
-      let formData = new FormData(); // Create a new FormData object
-      formData.append("aadhar", data.file1[0]); // Append the file to FormData
       const headers2 = {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       };
+      const formData = new FormData();
+      formData.append("aadhar", "as");
+      console.log(formData);
       // Make the POST request using Axios
       await axios({
-        method: "POST",
-        url: "http://localhost:8080/api/v1/register/teacher",
+        method: 'POST',
+        url: 'http://localhost:8080/api/v1/register/teacher',
         headers,
         data: send,
       });
@@ -95,24 +91,35 @@ function addTeacher() {
       await axios.post(
         `http://localhost:8080/api/v1/register/upload-aadhaar?email=${data.email}`,
         formData,
-        { headers: headers2 }
+        { headers2 }
       );
       navigate("/courses");
     } catch (error) {
-      console.error("Registration Failed:", error);
+      console.error('Registration Failed:', error)
     }
   }
 
   return (
     <div
       className="flex min-h-screen flex-col items-center justify-between p-24 bg-black-100 font-montserrat"
-      style={{ fontSize: "1.3rem" }}
+      style={{ fontSize: '1.3rem' }}
     >
       <div className=" mt-6 space-y-0  shadow-2xl shadow-black rounded-2xl max-lg:flex-col bg-teal-200 max-lg:space-y-8 p-16">
         <div>
           <h1 className="text-3xl font-bold mb-6">Add Teacher Form</h1>
         </div>
         <div className="font-xl">
+          <div>
+            <label htmlFor="fileInput" className="block mb-2">
+              Select a File
+            </label>
+            <input
+              id="fileInput"
+              type="file"
+              onChange={(event) => setSelectedFile(event.target.files[0])}
+              className="mb-4"
+            />
+          </div>
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 ">
             {/* File Upload */}
@@ -126,7 +133,6 @@ function addTeacher() {
                 type="file"
                 {...register("file1")}
                 accept="application/pdf"
-                //onChange={onFileChange}
               />
               <p className="text-red-500">{errors.file1?.message}</p>
             </div>
@@ -138,8 +144,8 @@ function addTeacher() {
               <Input
                 id="firstName"
                 placeholder="First Name"
-                {...register("firstname")}
-                style={{ fontSize: "1.3rem" }}
+                {...register('firstname')}
+                style={{ fontSize: '1.3rem' }}
                 className="bg-white"
               />
               <p className="text-red-500">{errors.firstname?.message}</p>
@@ -152,8 +158,8 @@ function addTeacher() {
               <Input
                 id="lastName"
                 placeholder="Last Name"
-                {...register("lastname")}
-                style={{ fontSize: "1.3rem" }}
+                {...register('lastname')}
+                style={{ fontSize: '1.3rem' }}
                 className="bg-white"
               />
               <p className="text-red-500">{errors.lastname?.message}</p>
@@ -167,8 +173,8 @@ function addTeacher() {
                 id="email"
                 type="email"
                 placeholder="Email"
-                {...register("email")}
-                style={{ fontSize: "1.3rem" }}
+                {...register('email')}
+                style={{ fontSize: '1.3rem' }}
                 className="bg-white"
               />
               <p className="text-red-500">{errors.email?.message}</p>
@@ -180,7 +186,7 @@ function addTeacher() {
               </label>
               <select
                 id="department"
-                {...register("department")}
+                {...register('department')}
                 className="border w-full h-12 rounded-md p-2 font-xs"
               >
                 <option value="CSIT">CSIT</option>
@@ -201,8 +207,8 @@ function addTeacher() {
               <Input
                 id="address"
                 placeholder="Address"
-                {...register("address")}
-                style={{ fontSize: "1.3rem" }}
+                {...register('address')}
+                style={{ fontSize: '1.3rem' }}
                 className="bg-white"
               />
               <p className="text-red-500">{errors.address?.message}</p>
@@ -214,7 +220,7 @@ function addTeacher() {
               </label>
               <select
                 id="gender"
-                {...register("gender")}
+                {...register('gender')}
                 className="border w-full h-12 rounded-md p-2 font-xs"
               >
                 <option value="M">Male</option>
@@ -231,21 +237,21 @@ function addTeacher() {
               <Input
                 id="aadharNumber"
                 placeholder="Aadhar Number"
-                {...register("aadharNo")}
-                style={{ fontSize: "1.3rem" }}
+                {...register('aadharNo')}
+                style={{ fontSize: '1.3rem' }}
                 className="bg-white"
               />
               <p className="text-red-500">{errors.aadharNo?.message}</p>
             </div>
             {/* Submit Button */}
-            <Button type="submit" style={{ fontSize: "1.3rem" }}>
+            <Button type="submit" style={{ fontSize: '1.3rem' }}>
               Submit
             </Button>
           </form>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default addTeacher;
+export default addTeacher
