@@ -1,11 +1,11 @@
-"use client";
+'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import axios from "axios";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import axios from 'axios'
 
-import { Button } from "../ui/button";
+import { Button } from '../ui/button'
 import {
   Form,
   FormControl,
@@ -14,64 +14,47 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import "./LoginForm.css";
-import { useNavigate } from "react-router-dom";
+} from '../ui/form'
+import { Input } from '../ui/input'
+import './LoginForm.css'
+import { useNavigate } from 'react-router-dom'
 
 // Zod Schema.
 const formSchema = z.object({
-  email: z.string().email("This is not a valid email."),
+  email: z.string().email('This is not a valid email.'),
   password: z.string(),
-});
+})
 
 export function LoginForm() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   // 1. Define your form.
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
-  });
-
-  // const [
-  //   onSubmit,
-  //   {
-  //     data: userData,
-  //     isLoading: isUserLoading,
-  //     isError: isUserError,
-  //     refetch: userRefetch,
-  //   },
-  // ] = useLazyQuery({
-  //   queryKey: ['random-user'],
-  //   queryFn: () => {
-  //     return axios
-  //       .get('https://randomuser.me/api/')
-  //       .then((res) => res.data.results[0])
-  //   },
-  // })
+  })
 
   // 2. Define a submit handler.
   async function onSubmit(values, e) {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/v1/auth/authenticate",
+        'http://localhost:8080/api/v1/auth/authenticate',
         {
           email: values.email,
           password: values.password,
         }
-      );
+      )
 
-      localStorage.setItem("role", response.data.role);
-      localStorage.setItem("token", response.data.access_token);
-      navigate("/");
+      localStorage.setItem('role', response.data.role)
+      localStorage.setItem('token', response.data.access_token)
+      navigate('/')
     } catch (error) {
-      console.error("Login Failed:", error);
+      console.error('Login Failed:', error)
     }
   }
 
@@ -135,5 +118,5 @@ export function LoginForm() {
         </div>
       </form>
     </Form>
-  );
+  )
 }

@@ -1,47 +1,40 @@
-import { useState } from "react";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 // Define Yup schema for form validation
 const formSchema = yup.object().shape({
-  firstName: yup.string().required("First name is required."),
-  lastName: yup.string().required("Last name is required."),
+  firstname: yup.string().required('First name is required.'),
+  lastname: yup.string().required('Last name is required.'),
   email: yup
     .string()
-    .email("Please enter a valid email address.")
-    .required("Email is required."),
-  phoneNumber: yup
+    .email('Please enter a valid email address.')
+    .required('Email is required.'),
+  department: yup.string().required('Department is required.'),
+  address: yup.string().required('Address is required.'),
+  gender: yup.string().required('Gender is required.'),
+  aadharNo: yup
     .string()
-    .required("Phone number is required.")
-    .matches(/^\d{10}$/, "Phone number must be 10 digits."),
-  department: yup.string().required("Department is required."),
-  address: yup.string().required("Address is required."),
-  gender: yup.string().required("Gender is required."),
-  aadharNumber: yup
-    .string()
-    .required("Aadhar number is required.")
-    .matches(/^\d{12}$/, "Aadhar number must be 12 digits."),
+    .required('Aadhar number is required.')
+    .matches(/^\d{12}$/, 'Aadhar number must be 12 digits.'),
   file1: yup
     .mixed()
     .test(
-      "fileType",
-      "Only PDF files are allowed",
-      (value) => value && value[0].type === "application/pdf"
+      'fileType',
+      'Only PDF files are allowed',
+      (value) => value && value[0].type === 'application/pdf'
     ),
-  file2: yup
-    .mixed()
-    .test(
-      "fileType",
-      "Only PDF files are allowed",
-      (value) => value && value[0].type === "application/pdf"
-    ),
-});
+})
 
 function addTeacher() {
-  // Initialize React Hook Form with Yup resolver and default form values
+  const token = localStorage.getItem('token')
+  const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
@@ -49,33 +42,55 @@ function addTeacher() {
   } = useForm({
     resolver: yupResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-      department: "",
-      address: "",
-      gender: "",
-      aadharNumber: "",
-      file1: null,
-      file2: null,
+      firstname: '',
+      lastname: '',
+      email: '',
+      department: '',
+      gender: '',
+      aadharNo: '',
+      address: '',
     },
-  });
+  })
 
   // Define form submit handler
-  function onSubmit(data) {
-    const formDataWithFile = {
-      ...data,
-      file1: data.file1[0],
-      file2: data.file2[0],
-    };
-    console.log("Form Data:", formDataWithFile);
+  async function onSubmit(data, e) {
+    e.preventDefault()
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8080/api/v1/register/teacher',
+        {
+          request: data,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const uploadAadhaarResponse = await axios.get(
+        `http://localhost:8080/api/v1/register/upload-aadhaar?email=${data.email}`,
+        {
+          aadhaar: file1.data[0],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      navigate('/courses')
+    } catch (error) {
+      console.error('Registration Failed:', error)
+    }
   }
 
   return (
     <div
       className="flex min-h-screen flex-col items-center justify-between p-24 bg-black-100 font-montserrat"
-      style={{ fontSize: "1.3rem" }}
+      style={{ fontSize: '1.3rem' }}
     >
       <div className=" mt-6 space-y-0  shadow-2xl shadow-black rounded-2xl max-lg:flex-col bg-teal-200 max-lg:space-y-8 p-16">
         <div>
@@ -92,11 +107,11 @@ function addTeacher() {
               <Input
                 id="firstName"
                 placeholder="First Name"
-                {...register("firstName")}
-                style={{ fontSize: "1.3rem" }}
+                {...register('firstname')}
+                style={{ fontSize: '1.3rem' }}
                 className="bg-white"
               />
-              <p className="text-red-500">{errors.firstName?.message}</p>
+              <p className="text-red-500">{errors.firstname?.message}</p>
             </div>
             {/* Last Name */}
             <div>
@@ -106,11 +121,11 @@ function addTeacher() {
               <Input
                 id="lastName"
                 placeholder="Last Name"
-                {...register("lastName")}
-                style={{ fontSize: "1.3rem" }}
+                {...register('lastname')}
+                style={{ fontSize: '1.3rem' }}
                 className="bg-white"
               />
-              <p className="text-red-500">{errors.lastName?.message}</p>
+              <p className="text-red-500">{errors.lastname?.message}</p>
             </div>
             {/* Email */}
             <div>
@@ -121,25 +136,11 @@ function addTeacher() {
                 id="email"
                 type="email"
                 placeholder="Email"
-                {...register("email")}
-                style={{ fontSize: "1.3rem" }}
+                {...register('email')}
+                style={{ fontSize: '1.3rem' }}
                 className="bg-white"
               />
               <p className="text-red-500">{errors.email?.message}</p>
-            </div>
-            {/* Phone Number */}
-            <div>
-              <label htmlFor="phoneNumber" className="block mb-1">
-                Phone Number
-              </label>
-              <Input
-                id="phoneNumber"
-                placeholder="Phone Number"
-                {...register("phoneNumber")}
-                style={{ fontSize: "1.3rem" }}
-                className="bg-white"
-              />
-              <p className="text-red-500">{errors.phoneNumber?.message}</p>
             </div>
             {/* Department */}
             <div>
@@ -148,7 +149,7 @@ function addTeacher() {
               </label>
               <select
                 id="department"
-                {...register("department")}
+                {...register('department')}
                 className="border w-full h-12 rounded-md p-2 font-xs"
               >
                 <option value="CSIT">CSIT</option>
@@ -169,8 +170,8 @@ function addTeacher() {
               <Input
                 id="address"
                 placeholder="Address"
-                {...register("address")}
-                style={{ fontSize: "1.3rem" }}
+                {...register('address')}
+                style={{ fontSize: '1.3rem' }}
                 className="bg-white"
               />
               <p className="text-red-500">{errors.address?.message}</p>
@@ -182,7 +183,7 @@ function addTeacher() {
               </label>
               <select
                 id="gender"
-                {...register("gender")}
+                {...register('gender')}
                 className="border w-full h-12 rounded-md p-2 font-xs"
               >
                 <option value="M">Male</option>
@@ -199,11 +200,11 @@ function addTeacher() {
               <Input
                 id="aadharNumber"
                 placeholder="Aadhar Number"
-                {...register("aadharNumber")}
-                style={{ fontSize: "1.3rem" }}
+                {...register('aadharNo')}
+                style={{ fontSize: '1.3rem' }}
                 className="bg-white"
               />
-              <p className="text-red-500">{errors.aadharNumber?.message}</p>
+              <p className="text-red-500">{errors.aadharNo?.message}</p>
             </div>
             {/* File Upload */}
             <div>
@@ -213,34 +214,21 @@ function addTeacher() {
               <input
                 id="file1"
                 type="file"
-                {...register("file1")}
+                {...register('file1')}
                 accept="application/pdf"
               />
               <p className="text-red-500">{errors.file1?.message}</p>
             </div>
 
-            {/* File Upload */}
-            <div className="mb-6">
-              <label htmlFor="file2" className="block mb-1">
-                Upload 12th Marksheet
-              </label>
-              <input
-                id="file2"
-                type="file"
-                {...register("file2")}
-                accept="application/pdf"
-              />
-              <p className="text-red-500">{errors.file?.message}</p>
-            </div>
             {/* Submit Button */}
-            <Button type="submit" style={{ fontSize: "1.3rem" }}>
+            <Button type="submit" style={{ fontSize: '1.3rem' }}>
               Submit
             </Button>
           </form>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default addTeacher;
+export default addTeacher

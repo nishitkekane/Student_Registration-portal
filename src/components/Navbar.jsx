@@ -1,20 +1,21 @@
-import React, { useState } from "react";
-import { navLinks } from "../constants/index";
-import { ToggleTheme } from "./Extra/ToggleTheme";
-import { Button } from "./ui/button";
-import { Outlet, Link, useNavigate } from "react-router-dom";
-import Logo from "../assets/logo.png";
+import React, { useState } from 'react'
+import { navLinks } from '../constants/index'
+import { ToggleTheme } from './Extra/ToggleTheme'
+import { Button } from './ui/button'
+import { Outlet, Link, useNavigate } from 'react-router-dom'
+import Logo from '../assets/logo.png'
 
 const Navbar = () => {
-  const token = localStorage.getItem("token");
-  const navigate = useNavigate();
-  const [showNav, setShowNav] = useState(false);
+  const token = localStorage.getItem('token')
+  const role = localStorage.getItem('role')
+  const navigate = useNavigate()
+  const [showNav, setShowNav] = useState(false)
 
   const logoutHandler = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    navigate("/login");
-  };
+    localStorage.removeItem('token')
+    localStorage.removeItem('role')
+    navigate('/login')
+  }
 
   return (
     <>
@@ -23,7 +24,7 @@ const Navbar = () => {
         className="lg:hidden fixed top-4 right-4 z-10 bg-gray-200 dark:bg-gray-800 p-2 rounded-full"
         onClick={() => setShowNav(!showNav)}
       >
-        {showNav ? "Close" : "Menu"}
+        {showNav ? 'Close' : 'Menu'}
       </button>
 
       {/* Navigation Menu */}
@@ -120,7 +121,7 @@ const Navbar = () => {
       {/* Displaying the child */}
       <Outlet />
     </>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
