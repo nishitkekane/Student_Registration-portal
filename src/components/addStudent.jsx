@@ -69,7 +69,7 @@ function addStudent() {
   });
 
   // Define form submit handler
-  function onSubmit(data) {
+  async function  onSubmit(data) {
     const send = {
       firstname: data.firstname,
       lastname: data.lastname,
@@ -88,13 +88,31 @@ function addStudent() {
       };
 
       // Make the POST request using Axios
-      axios({
+      await axios({
         method: "POST",
         url: "http://localhost:8080/api/v1/register/student",
         headers,
         data: send,
       });
-
+      console.log(data);
+      let formData = new FormData(); // Create a new FormData object
+      formData.append("aadhar", data.file1[0]); // Append the file to FormData
+            const headers2 = {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            };
+      await axios.post(
+        `http://localhost:8080/api/v1/register/upload-aadhaar?email=${data.email}`,
+        formData,
+        { headers: headers2 }
+      );
+      let formData2 = new FormData(); // Create a new FormData object
+      formData2.append("marksheet", data.file2[0]); // Append the file to FormData
+      await axios.post(
+        `http://localhost:8080/api/v1/register/upload-marksheet?email=${data.email}`,
+        formData2,
+        { headers: headers2 }
+      );
       navigate("/courses");
     } catch (error) {
       console.error("Registration Failed:", error);

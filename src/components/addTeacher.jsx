@@ -35,7 +35,7 @@ const formSchema = yup.object().shape({
 function addTeacher() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-
+  // let formData = new FormData();
   const {
     register,
     handleSubmit,
@@ -54,6 +54,11 @@ function addTeacher() {
     },
   });
 
+  // const onFileChange = (e) => {
+  //   if (e.target && e.target.files[0]) {
+  //     formData.append("aadhar", e.target.files[0]);
+  //   }
+  // };
   // Define form submit handler
   async function onSubmit(data) {
     const send = {
@@ -72,13 +77,13 @@ function addTeacher() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
+      console.log(data);
+      let formData = new FormData(); // Create a new FormData object
+      formData.append("aadhar", data.file1[0]); // Append the file to FormData
       const headers2 = {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       };
-      const formData = new FormData();
-      formData.append("aadhar", "as");
-      console.log(formData);
       // Make the POST request using Axios
       await axios({
         method: "POST",
@@ -90,7 +95,7 @@ function addTeacher() {
       await axios.post(
         `http://localhost:8080/api/v1/register/upload-aadhaar?email=${data.email}`,
         formData,
-        { headers2 }
+        { headers: headers2 }
       );
       navigate("/courses");
     } catch (error) {
@@ -121,6 +126,7 @@ function addTeacher() {
                 type="file"
                 {...register("file1")}
                 accept="application/pdf"
+                //onChange={onFileChange}
               />
               <p className="text-red-500">{errors.file1?.message}</p>
             </div>
