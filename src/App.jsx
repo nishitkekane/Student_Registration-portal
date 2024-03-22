@@ -1,10 +1,10 @@
-import './App.css'
-import Navbar from './components/Navbar'
-import Home from './pages/Home'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Orders from './pages/Orders'
-import Login from './pages/Login'
-import TaskPage from './pages/TaskPage'
+import "./App.css";
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Courses from "./pages/Courses";
+import Login from "./pages/Login";
+import TaskPage from "./pages/TaskPage";
 
 function App() {
   return (
@@ -15,8 +15,8 @@ function App() {
           <Route path="/" element={<Navbar />}>
             {/* Home! */}
             <Route index element={<Home />} />
-            {/* Orders! */}
-            <Route path="courses" element={<Orders />} />
+            {/* Cou! */}
+            <Route path="courses" element={<Courses />} />
             {/* Login! */}
             <Route path="login" element={<Login />} />
             {/* Task! */}
@@ -28,7 +28,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
