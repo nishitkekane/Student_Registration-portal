@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // Define Yup schema for form validation
 const formSchema = yup.object().shape({
@@ -42,6 +44,8 @@ const formSchema = yup.object().shape({
 });
 
 function addStudent() {
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
   // Initialize React Hook Form with Yup resolver and default form values
   const {
     register,
@@ -66,6 +70,35 @@ function addStudent() {
 
   // Define form submit handler
   function onSubmit(data) {
+    const send = {
+      firstname: data.firstname,
+      lastname: data.lastname,
+      email: data.email,
+      department: data.department,
+      gender: data.gender,
+      aadhaarNo: data.aadharNo,
+      address: data.address,
+      year: data.year,
+    };
+
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+
+      // Make the POST request using Axios
+      axios({
+        method: "POST",
+        url: "http://localhost:8080/api/v1/register/student",
+        headers,
+        data: send,
+      });
+
+      navigate("/courses");
+    } catch (error) {
+      console.error("Registration Failed:", error);
+    }
     const formDataWithFile = {
       ...data,
       file1: data.file1[0],

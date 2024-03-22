@@ -10,18 +10,17 @@ import axios from "axios";
 // Define Yup schema for form validation
 const formSchema = yup.object().shape({
   courseId: yup.string().required("Course ID is required."),
-  name: yup.string().required("Name is required."),
-  hoursWeek: yup
+  type: yup.string().required("Type is required."),
+  date: yup
     .string()
-    .required("Hours per week is required.")
-    .matches(/^\d{1}$/, "Single digit only"),
-  credit: yup
-    .string()
-    .required("Number of credits are required.")
-    .matches(/^\d+(\.\d{1})?$/, "Single digit only or decimal only"),
+    .required("Date is required")
+    .matches(
+      /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(19|20)\d\d$/,
+      "Invalid date format. Please use dd-mm-yyyy"
+    ),
 });
 
-function addCourse() {
+function addExam() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   // Initialize React Hook Form with Yup resolver and default form values
@@ -33,9 +32,8 @@ function addCourse() {
     resolver: yupResolver(formSchema),
     defaultValues: {
       courseId: "", // Added courseId field
-      name: "",
-      hoursWeek: "",
-      credit: "",
+      type: "",
+      date: "",
     },
   });
 
@@ -43,9 +41,8 @@ function addCourse() {
   async function onSubmit(data) {
     const send = {
       courseId: data.courseId, // Include courseId in the data
-      name: data.name,
-      hoursWeek: data.hoursWeek,
-      credit: data.credit,
+      type: data.type,
+      date: data.date,
     };
 
     try {
@@ -55,7 +52,7 @@ function addCourse() {
       };
 
       // Make the POST request using Axios
-      await axios.post("http://localhost:8080/api/v1/course/register", send, {
+      await axios.post("http://localhost:8080/api/v1/exam/register", send, {
         headers,
       });
 
@@ -73,7 +70,7 @@ function addCourse() {
     >
       <div className=" bg-teal-200 mt-6 space-y-0 shadow-2xl shadow-black rounded-2xl max-lg:flex-col max-lg:space-y-8 p-16">
         <div>
-          <h1 className="text-3xl font-bold mb-6">Add Course Form</h1>
+          <h1 className="text-3xl font-bold mb-6">Add Exam Form</h1>
         </div>
         <div className="font-xl">
           {/* Form */}
@@ -92,53 +89,39 @@ function addCourse() {
               />
               <p className="text-red-500">{errors.courseId?.message}</p>
             </div>
-            {/* Name of Course */}
+            {/* Type of Exam */}
             <div>
-              <label htmlFor="name" className="block mb-1">
-                Name of Course
+              <label htmlFor="type" className="block mb-1">
+                Type of Exam
               </label>
-              <Input
-                id="name"
-                placeholder="Course Name"
-                {...register("name")}
-                style={{ fontSize: "1.3rem" }}
-                className="bg-white"
-              />
-              <p className="text-red-500">{errors.name?.message}</p>
+              <select
+                id="type"
+                {...register("type")}
+                className="border w-full h-12 rounded-md p-2 font-xs"
+              >
+                <option value="MST">MST</option>
+                <option value="ESE">ESE</option>
+              </select>
+              <p className="text-red-500">{errors.type?.message}</p>
             </div>
-            {/* Hours per Week */}
+            {/* Date */}
             <div>
-              <label htmlFor="hoursWeek" className="block mb-1">
-                Hours per Week
+              <label htmlFor="date" className="block mb-1">
+                Date (dd-mm-yyyy)
               </label>
               <Input
-                id="hoursWeek"
-                placeholder="Hours per Week"
-                {...register("hoursWeek")}
+                id="date"
+                placeholder="Exam Date (dd-mm-yyyy)"
+                {...register("date")}
                 style={{ fontSize: "1.3rem" }}
                 className="bg-white"
               />
-              <p className="text-red-500">{errors.hoursWeek?.message}</p>
-            </div>
-            {/* Credits */}
-            <div>
-              <label htmlFor="credit" className="block mb-1">
-                Credits
-              </label>
-              <Input
-                id="credit"
-                type="credit"
-                placeholder="Credits"
-                {...register("credit")}
-                style={{ fontSize: "1.3rem" }}
-                className="bg-white"
-              />
-              <p className="text-red-500">{errors.credit?.message}</p>
+              <p className="text-red-500">{errors.date?.message}</p>
             </div>
 
             {/* Submit Button */}
             <Button type="submit" style={{ fontSize: "1.3rem" }}>
-              Add Course
+              Add Exam
             </Button>
           </form>
         </div>
@@ -147,4 +130,4 @@ function addCourse() {
   );
 }
 
-export default addCourse;
+export default addExam;
