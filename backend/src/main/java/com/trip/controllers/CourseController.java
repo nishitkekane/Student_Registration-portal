@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
 import java.security.Principal;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/v1/course")
@@ -29,8 +30,9 @@ public class CourseController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getCourse(@RequestParam String id) {
-        Course course = courseService.getCourse(id);
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> getCourse(Principal principal) {
+        ArrayList<Course> course = courseService.getCourse(principal.getName());
         return ResponseEntity.ok(course);
     }
 
@@ -38,9 +40,9 @@ public class CourseController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> enroll(@RequestParam String id, Principal principal) {
         boolean enrolled = courseService.enroll(id, principal.getName());
-        if(enrolled) {
+        if (enrolled) {
             return ResponseEntity.ok("Student Enrolled Successfully!");
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not Enrolled!");
         }
     }

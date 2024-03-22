@@ -27,9 +27,10 @@ public class CourseService {
 
     private final UserRepository userRepository;
 
-    public Course registerCourse(RegisterCourse request, String name){
+    public Course registerCourse(RegisterCourse request, String name) {
         Optional<User> user = userRepository.findByEmail(name);
-        if(user.isEmpty()) return null;
+        if (user.isEmpty())
+            return null;
 
         Course course = Course.builder()
                 .courseId(request.getCourseId())
@@ -44,40 +45,50 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
-    public Course getCourse(String courseId){
-        Optional<Course> course = courseRepository.findById(courseId);
-        return course.orElse(null);
+    public ArrayList<Course> getCourse(String teacher) {
+        List<Course> courses = courseRepository.findAll();
+        ArrayList<Course> teacherCourses = new ArrayList<>();
+
+        for (Course c : courses) {
+            if (c.getFaculty().equals(teacher)) {
+                teacherCourses.add(c);
+            }
+        }
+        return teacherCourses;
     }
 
-    public boolean enroll(String courseId, String name){
+    public boolean enroll(String courseId, String name) {
         Optional<User> user = userRepository.findByEmail(name);
-        if(user.isEmpty()) return false;
+        if (user.isEmpty())
+            return false;
 
         Optional<Course> temp = courseRepository.findById(courseId);
-        if(temp.isEmpty()) return false;
+        if (temp.isEmpty())
+            return false;
 
         Course course = temp.get();
         List<String> students = course.getStudents();
 
         boolean flag = true;
-        for(String t: students){
-            if(t.equals(name)){
+        for (String t : students) {
+            if (t.equals(name)) {
                 flag = false;
                 break;
             }
         }
 
-        if(flag){
+        if (flag) {
             course.getStudents().add(name);
             courseRepository.save(course);
             return true;
         }
         return flag;
     }
-    
+
     public ByteArrayOutputStream generateAttendance(String courseId) throws DocumentException {
         Optional<Course> byId = courseRepository.findById(courseId);
-        if(byId.isEmpty()) return null;
+        if (byId.isEmpty())
+            return null;
         Course course = byId.get();
         User faculty = userRepository.findByEmail(course.getFaculty()).get();
 
@@ -92,7 +103,7 @@ public class CourseService {
         document.add(Chunk.NEWLINE);
 
         Font boldFont = new Font(Font.FontFamily.COURIER, 12, Font.BOLD);
-        PdfPTable table = new PdfPTable(new float[]{12, 12, 12, 12, 12, 12});
+        PdfPTable table = new PdfPTable(new float[] { 12, 12, 12, 12, 12, 12 });
 
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -104,10 +115,9 @@ public class CourseService {
             table.addCell(new PdfPCell(new Phrase("Date:" + nextDate.format(formatter), boldFont)));
         }
 
-
         course.getStudents().forEach(temp -> {
             User student = userRepository.findByEmail(temp).get();
-            table.addCell(new PdfPCell(new Phrase(student.getFirstname() + " "+ student.getLastname())));
+            table.addCell(new PdfPCell(new Phrase(student.getFirstname() + " " + student.getLastname())));
             table.addCell(new PdfPCell(new Phrase()));
             table.addCell(new PdfPCell(new Phrase()));
             table.addCell(new PdfPCell(new Phrase()));
