@@ -1,7 +1,6 @@
 package com.trip.entities.course;
 
 import com.trip.entities.user.Department;
-import com.trip.entities.user.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +33,8 @@ public class Course {
     public Course() {
     }
 
-    public Course(String courseId, String name, String faculty, Double hoursWeek, Double credit, List<String> students, Department department) {
+    public Course(String courseId, String name, String faculty, Double hoursWeek, Double credit, List<String> students,
+            Department department) {
         this.courseId = courseId;
         this.name = name;
         this.faculty = faculty;

@@ -20,9 +20,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -54,8 +59,12 @@ public class AuthenticationService {
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .department(request.getDepartment())
+                .address(request.getAddress())
+                .aadhaarNo(request.getAadhaarNo())
                 .password(passwordEncoder.encode(password))
+                .gender(request.getGender())
                 .role(isTeacher ? Role.TEACHER : Role.USER)
+                .year(request.getYear())
                 .build();
 
         // Saving And Generating the User.
@@ -63,6 +72,40 @@ public class AuthenticationService {
 
         // Sending the Mail.
         sendMail(request.getEmail(), password);
+    }
+
+    public String uploadAadhaar(String path, MultipartFile file, String email) throws IOException {
+        User temp = repository.findByEmail(email).get();
+        String name = UUID.randomUUID() + file.getOriginalFilename();
+
+        String filePath = path + File.separator + name;
+        File f = new File(path);
+
+        if (!f.exists()) {
+            f.mkdir();
+        }
+
+        Files.copy(file.getInputStream(), Paths.get(filePath));
+        temp.setAadhaarCard(name);
+        repository.save(temp);
+        return name;
+    }
+
+    public String uploadMarksheet(String path, MultipartFile file, String email) throws IOException {
+        User temp = repository.findByEmail(email).get();
+        String name = UUID.randomUUID() + file.getOriginalFilename();
+
+        String filePath = path + File.separator + name;
+        File f = new File(path);
+
+        if (!f.exists()) {
+            f.mkdir();
+        }
+
+        Files.copy(file.getInputStream(), Paths.get(filePath));
+        temp.setMarksheet(name);
+        repository.save(temp);
+        return name;
     }
 
     public void sendMail(String email, String password) {

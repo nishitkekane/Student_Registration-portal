@@ -35,9 +35,10 @@ public class ExamService {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-    public Exam register(RegisterExam request){
+    public Exam register(RegisterExam request) {
         Optional<Course> course = courseRepository.findById(request.getCourseId());
-        if(course.isEmpty()) return null;
+        if (course.isEmpty())
+            return null;
 
         Exam exam = Exam.builder()
                 .courseId(request.getCourseId())
@@ -48,7 +49,7 @@ public class ExamService {
         return examRepository.save(exam);
     }
 
-    public Exam getExam(String courseId){
+    public Exam getExam(String courseId) {
         Optional<Exam> course = examRepository.findById(courseId);
         return course.orElse(null);
     }
@@ -58,7 +59,7 @@ public class ExamService {
         User user = userRepository.findByEmail(student).get();
         List<Exam> exams = new ArrayList<>();
 
-        for(Course course: courses){
+        for (Course course : courses) {
             Optional<Exam> temp = examRepository.findById(course.getCourseId());
             temp.ifPresent(exams::add);
         }
@@ -74,9 +75,7 @@ public class ExamService {
         document.add(Chunk.NEWLINE);
 
         Font boldFont = new Font(Font.FontFamily.COURIER, 12, Font.BOLD);
-        PdfPTable table = new PdfPTable(new float[]{12, 12, 12});
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        PdfPTable table = new PdfPTable(new float[] { 12, 12, 12 });
 
         table.addCell(new PdfPCell(new Phrase("Exam Name: ", boldFont)));
         table.addCell(new PdfPCell(new Phrase("Date: ", boldFont)));
@@ -84,7 +83,7 @@ public class ExamService {
 
         exams.forEach(temp -> {
             Course course = courseRepository.findById(temp.getCourseId()).get();
-            table.addCell(new PdfPCell(new Phrase(course.getName() + " "+ course.getCourseId())));
+            table.addCell(new PdfPCell(new Phrase(course.getName() + " " + course.getCourseId())));
             table.addCell(new PdfPCell(new Phrase(temp.getDate().toString())));
             table.addCell(new PdfPCell(new Phrase()));
         });

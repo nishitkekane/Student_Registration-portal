@@ -1,6 +1,5 @@
 package com.trip.entities.user;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

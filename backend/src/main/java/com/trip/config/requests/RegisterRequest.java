@@ -1,8 +1,8 @@
 package com.trip.config.requests;
 
 import com.trip.entities.user.Department;
-import com.trip.entities.user.Role;
-import jakarta.persistence.Column;
+import com.trip.entities.user.Year;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -23,4 +23,6 @@ public class RegisterRequest {
     private Integer aadhaarNo;
 
     private char gender;
+
+    private Year year;
 }

@@ -46,10 +46,16 @@ public class User implements UserDetails {
 
     private char gender;
 
-    public User() {
-    }
+    @Enumerated(EnumType.STRING)
+    private Year year;
 
-    public User(Integer id, String firstname, String lastname, String email, Department department, String password, Role role, List<Token> tokens, String address, Integer aadhaarNo, char gender) {
+    private String aadhaarCard;
+
+    private String marksheet;
+
+    public User(Integer id, String firstname, String lastname, String email, Department department, String password,
+            Role role, List<Token> tokens, String address, Integer aadhaarNo, char gender, Year year,
+            String aadhaarCard, String marksheet) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -61,6 +67,12 @@ public class User implements UserDetails {
         this.address = address;
         this.aadhaarNo = aadhaarNo;
         this.gender = gender;
+        this.year = year;
+        this.aadhaarCard = aadhaarCard;
+        this.marksheet = marksheet;
+    }
+
+    public User() {
     }
 
     @Override
