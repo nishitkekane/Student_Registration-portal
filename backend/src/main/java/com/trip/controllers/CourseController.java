@@ -2,6 +2,7 @@ package com.trip.controllers;
 
 import com.itextpdf.text.DocumentException;
 import com.trip.config.requests.RegisterCourse;
+import com.trip.config.responses.CourseData;
 import com.trip.entities.course.Course;
 import com.trip.services.CourseService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,6 +34,13 @@ public class CourseController {
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> getCourse(Principal principal) {
         ArrayList<Course> course = courseService.getCourse(principal.getName());
+        return ResponseEntity.ok(course);
+    }
+
+    @GetMapping("/getUser")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getCoursesUser(Principal principal) {
+        ArrayList<CourseData> course = courseService.getStudentCourses(principal.getName());
         return ResponseEntity.ok(course);
     }
 

@@ -5,6 +5,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.trip.config.requests.RegisterCourse;
+import com.trip.config.responses.CourseData;
 import com.trip.entities.course.Course;
 import com.trip.entities.user.User;
 import com.trip.repositories.CourseRepository;
@@ -128,5 +129,23 @@ public class CourseService {
         document.add(table);
         document.close();
         return outputStream;
+    }
+
+    public ArrayList<CourseData> getStudentCourses(String name) {
+        ArrayList<CourseData> list = new ArrayList<>();
+
+        List<Course> courses = new ArrayList<>();
+        for (Course c : courses) {
+            boolean flag = false;
+            for (String temp : c.getStudents()) {
+                if (temp.equals(name)) {
+                    flag = true;
+                    break;
+                }
+            }
+            list.add(new CourseData(c, flag));
+        }
+
+        return list;
     }
 }

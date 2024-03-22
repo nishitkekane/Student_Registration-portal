@@ -30,19 +30,19 @@ public class ExamController {
 
     @GetMapping("/get")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getCourse(@RequestParam String id) {
+    public ResponseEntity<?> getExam(@RequestParam String id) {
         Exam exam = examService.getExam(id);
         return ResponseEntity.ok(exam);
     }
 
     @PostMapping(value = "/ticket", produces = MediaType.APPLICATION_PDF_VALUE)
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getTicket(Principal principal) throws DocumentException{
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDisposition(ContentDisposition.builder("inline").filename("transaction_report.pdf").build());
+    public ResponseEntity<?> getTicket(Principal principal) throws DocumentException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("inline").filename("transaction_report.pdf").build());
 
-            ByteArrayOutputStream outputStream = examService.generateHallTicket(principal.getName());
-            return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
-        }
+        ByteArrayOutputStream outputStream = examService.generateHallTicket(principal.getName());
+        return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
     }
+}
