@@ -1,0 +1,26 @@
+form {
+  background: hsla(97, 61%, 46%, 1);
+
+  background: linear-gradient(
+    45deg,
+    hsla(97, 61%, 46%, 1) 0%,
+    hsla(0, 0%, 100%, 1) 46%,
+    hsla(58, 100%, 58%, 1) 100%
+  );
+
+  background: -moz-linear-gradient(
+    45deg,
+    hsla(97, 61%, 46%, 1) 0%,
+    hsla(0, 0%, 100%, 1) 46%,
+    hsla(58, 100%, 58%, 1) 100%
+  );
+
+  background: -webkit-linear-gradient(
+    45deg,
+    hsla(97, 61%, 46%, 1) 0%,
+    hsla(0, 0%, 100%, 1) 46%,
+    hsla(58, 100%, 58%, 1) 100%
+  );
+
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#66BF2E", endColorstr="#FFFFFF", GradientType=1 );
+}
