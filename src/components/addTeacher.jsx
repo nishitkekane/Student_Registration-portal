@@ -22,13 +22,6 @@ const formSchema = yup.object().shape({
     .string()
     .required('Aadhar number is required.')
     .matches(/^\d{12}$/, 'Aadhar number must be 12 digits.'),
-  file1: yup
-    .mixed()
-    .test(
-      'fileType',
-      'Only PDF files are allowed',
-      (value) => value && value[0].type === 'application/pdf'
-    ),
 })
 
 function addTeacher() {
@@ -53,33 +46,31 @@ function addTeacher() {
   })
 
   // Define form submit handler
-  async function onSubmit(data, e) {
-    e.preventDefault()
+  async function onSubmit(data) {
+    const send = {
+      firstname: data.firstname,
+      lastname: data.lastname,
+      email: data.email,
+      department: data.department,
+      gender: data.gender,
+      aadhaarNo: data.aadharNo,
+      address: data.address,
+      year: 'FY',
+    }
 
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/v1/register/teacher',
-        {
-          request: data,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
 
-      const uploadAadhaarResponse = await axios.get(
-        `http://localhost:8080/api/v1/register/upload-aadhaar?email=${data.email}`,
-        {
-          aadhaar: file1.data[0],
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      // Make the POST request using Axios
+      axios({
+        method: 'POST',
+        url: 'http://localhost:8080/api/v1/register/teacher',
+        headers,
+        data: send,
+      })
 
       navigate('/courses')
     } catch (error) {
@@ -206,20 +197,6 @@ function addTeacher() {
               />
               <p className="text-red-500">{errors.aadharNo?.message}</p>
             </div>
-            {/* File Upload */}
-            <div>
-              <label htmlFor="file1" className="block mb-1">
-                Upload Aadhar Card (PDF only)
-              </label>
-              <input
-                id="file1"
-                type="file"
-                {...register('file1')}
-                accept="application/pdf"
-              />
-              <p className="text-red-500">{errors.file1?.message}</p>
-            </div>
-
             {/* Submit Button */}
             <Button type="submit" style={{ fontSize: '1.3rem' }}>
               Submit

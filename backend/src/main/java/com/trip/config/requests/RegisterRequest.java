@@ -20,7 +20,7 @@ public class RegisterRequest {
 
     private String address;
 
-    private Integer aadhaarNo;
+    private Long aadhaarNo;
 
     private char gender;
 

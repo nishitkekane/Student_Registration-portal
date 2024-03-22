@@ -42,7 +42,7 @@ public class User implements UserDetails {
     private String address;
 
     @Column(length = 12)
-    private Integer aadhaarNo;
+    private Long aadhaarNo;
 
     private char gender;
 
@@ -54,7 +54,7 @@ public class User implements UserDetails {
     private String marksheet;
 
     public User(Integer id, String firstname, String lastname, String email, Department department, String password,
-            Role role, List<Token> tokens, String address, Integer aadhaarNo, char gender, Year year,
+            Role role, List<Token> tokens, String address, Long aadhaarNo, char gender, Year year,
             String aadhaarCard, String marksheet) {
         this.id = id;
         this.firstname = firstname;
