@@ -99,7 +99,7 @@ def dataEvaluation(firstData, flag, *secondData):
     return False
 
 def main():
-    file = r"C:\Users\ayush\Documents\GitHub\Student_Registration-portal\WhatsApp Image 2024-03-22 at 22.29.43.jpeg"
+    file = r"/home/nishitk/Documents/college_hack_final/Student_Registration-portal/WhatsApp Image 2024-03-22 at 22.29.43.jpeg"
     npimg = np.fromfile(file, np.uint8)
     file = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
     li = ocrHandler(file)

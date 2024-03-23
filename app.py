@@ -1,11 +1,18 @@
 from flask import Flask, request, app, render_template, redirect
 from ocrmodel import ocrHandler
-
+from flask_cors import CORS
 import cv2
 import numpy as np
 
 app = Flask(__name__)
-
+CORS(app, origins=['http://localhost:5173'])
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response
 @app.route('/', methods = ['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -23,4 +30,4 @@ def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
+    app.run( port=5000, debug=True, threaded=True)

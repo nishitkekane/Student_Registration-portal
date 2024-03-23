@@ -28,8 +28,10 @@ const formSchema = yup.object().shape({
 function addTeacher() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-  const [selectedFile, setSelectedFile] = useState(null);
-  const {
+  const [selectedFile, setSelectedFile] = useState(localStorage.getItem('file'));
+  // localStorage.setItem('adharno',"")
+  // localStorage.setItem('gender',"")
+  let {
     register,
     handleSubmit,
     formState: { errors },
@@ -40,8 +42,8 @@ function addTeacher() {
       lastname: "",
       email: "",
       department: "",
-      gender: "",
-      aadharNo: "",
+      gender: localStorage.getItem('gender')?.slice(0,1),
+      aadharNo: localStorage.getItem('adharno'),
       address: "",
     },
   });
@@ -98,7 +100,6 @@ function addTeacher() {
       console.error("Registration Failed:", error);
     }
   }
-
   return (
     <div
       className="flex min-h-screen flex-col items-center justify-between p-24 bg-black-100 font-montserrat"
@@ -121,10 +122,31 @@ function addTeacher() {
             />
             <Button
               type="button"
-              onClick={() => {
+              onClick={async (e) => {
                 console.log(selectedFile);
                 if (selectedFile && selectedFile.type.slice(0, 5) === "image") {
-                  // Upload logic
+                  // Upload 
+                  const formData2 = new FormData();
+                  formData2.append("file", selectedFile);
+                  const headers2 = {
+                      "Content-Type": "multipart/form-data",
+                    };
+                await axios.post(
+                        `http://127.0.0.1:5000`,
+                        formData2,
+                        { headers: headers2 }
+                      )
+                      .then(res => {
+                        console.log(res.data)
+                        localStorage.setItem('gender',res.data.gender)
+                        localStorage.setItem('adharno',res.data.adharno)
+                        localStorage.setItem('file',selectedFile)
+                        window.location.reload(false)
+                      })
+                      .catch(e=>
+                      console.log(e)
+
+                      );
                 } else {
                   setSelectedFile(null);
                   document.getElementById("fileInput").value = "";
