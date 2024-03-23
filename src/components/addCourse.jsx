@@ -68,7 +68,7 @@ function addCourse() {
 
   return (
     <div
-      className="flex min-h-screen flex-col items-start justify-between p-24 bg-black-100 font-montserrat"
+      className="flex min-h-screen flex-col items-start justify-between p-24 bg-black-100 font-montserrat inline"
       style={{ fontSize: "1.3rem" }}
     >
       <div className=" bg-teal-200 mt-6 space-y-0 shadow-2xl shadow-black rounded-2xl max-lg:flex-col max-lg:space-y-8 p-16">

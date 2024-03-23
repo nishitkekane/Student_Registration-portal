@@ -46,6 +46,7 @@ const formSchema = yup.object().shape({
 function addStudent() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const [selectedFile, setSelectedFile] = useState(null);
   // Initialize React Hook Form with Yup resolver and default form values
   const {
     register,
@@ -142,16 +143,33 @@ function addStudent() {
           >
             {/* File Upload */}
             <div>
-              <label htmlFor="file1" className="block mb-1">
-                Upload Aadhar Card (PDF only)
+              <label htmlFor="fileInput" className="block mb-2">
+                Upload Aadhaar Card Image
               </label>
               <input
-                id="file1"
+                id="fileInput"
                 type="file"
-                {...register("file1")}
-                accept="application/pdf"
+                onChange={(event) => setSelectedFile(event.target.files[0])}
+                className="mb-4"
               />
-              <p className="text-red-500">{errors.file1?.message}</p>
+              <Button
+                type="button"
+                onClick={() => {
+                  console.log(selectedFile);
+                  if (
+                    selectedFile &&
+                    selectedFile.type.slice(0, 5) === "image"
+                  ) {
+                    // Upload logic
+                  } else {
+                    setSelectedFile(null);
+                    document.getElementById("fileInput").value = "";
+                    alert("Please select an image file.");
+                  }
+                }}
+              >
+                Upload Image
+              </Button>
             </div>
 
             {/* File Upload */}

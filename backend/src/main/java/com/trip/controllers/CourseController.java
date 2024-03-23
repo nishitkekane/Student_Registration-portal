@@ -31,7 +31,7 @@ public class CourseController {
     }
 
     @GetMapping("/get")
-    @PreAuthorize("hasRole('TEACHER')")
+    // @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> getCourse(Principal principal) {
         ArrayList<Course> course = courseService.getCourse(principal.getName());
         return ResponseEntity.ok(course);
